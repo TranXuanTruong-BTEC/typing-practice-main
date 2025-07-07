@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { Loader2, User2, Mail, KeyRound, LogOut, History } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function ProfilePage() {
   const [user, setUser] = useState<any>(null);
@@ -16,7 +16,10 @@ export default function ProfilePage() {
   const [avatar, setAvatar] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarLoading, setAvatarLoading] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [verifyLoading, setVerifyLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const token = localStorage.getItem("user_token");
@@ -26,9 +29,18 @@ export default function ProfilePage() {
         setUser(decoded);
         setGmail(decoded.gmail || "");
         setAvatar(decoded.avatar || null);
+        setEmailVerified(decoded.emailVerified || false);
       } catch {}
     }
-  }, []);
+    // Thông báo xác thực email
+    const verified = searchParams.get("verified");
+    if (verified === "1") {
+      setMsg("Xác thực email thành công!");
+      setEmailVerified(true);
+    } else if (verified === "0") {
+      setErr("Xác thực email thất bại hoặc token hết hạn!");
+    }
+  }, [searchParams]);
 
   const handleUpdateGmail = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +59,11 @@ export default function ProfilePage() {
       });
       const data = await res.json();
       if (!res.ok) setErr(data.message || "Cập nhật thất bại");
-      else setMsg("Cập nhật gmail thành công!");
+      else {
+        setMsg("Cập nhật gmail thành công! Đã gửi email xác thực.");
+        setEmailVerified(false);
+        sendVerifyEmail();
+      }
     } catch {
       setErr("Lỗi kết nối server");
     }
@@ -116,6 +132,23 @@ export default function ProfilePage() {
     setAvatarFile(null);
   };
 
+  const sendVerifyEmail = async () => {
+    setVerifyLoading(true); setErr(""); setMsg("");
+    try {
+      const token = localStorage.getItem("user_token");
+      const res = await fetch("/api/auth/send-verify-email", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (!res.ok) setErr(data.message || "Gửi email xác thực thất bại");
+      else setMsg("Đã gửi email xác thực. Vui lòng kiểm tra hộp thư!");
+    } catch {
+      setErr("Lỗi kết nối server");
+    }
+    setVerifyLoading(false);
+  };
+
   if (!user) return <div className="min-h-screen flex items-center justify-center text-gray-500">Vui lòng đăng nhập để xem thông tin tài khoản.</div>;
 
   return (
@@ -135,6 +168,24 @@ export default function ProfilePage() {
             <div className="flex items-center gap-2 text-gray-500 mt-1">
               <Mail className="w-4 h-4" />
               <span>{gmail || <span className="italic text-gray-400">Chưa cập nhật gmail</span>}</span>
+              {gmail && (
+                emailVerified ? (
+                  <span className="ml-2 px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium">Đã xác thực</span>
+                ) : (
+                  <>
+                    <span className="ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded text-xs font-medium">Chưa xác thực</span>
+                    <button
+                      onClick={sendVerifyEmail}
+                      className="ml-2 px-2 py-0.5 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded text-xs font-medium flex items-center gap-1"
+                      disabled={verifyLoading}
+                      type="button"
+                    >
+                      {verifyLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
+                      Gửi lại xác thực
+                    </button>
+                  </>
+                )
+              )}
             </div>
             <div className="text-xs text-gray-400 mt-1">ID: {user.id}</div>
             {/* Upload avatar */}
