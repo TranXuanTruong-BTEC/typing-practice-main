@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
 import { Loader2, User2, Mail, KeyRound, LogOut, History } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 // Định nghĩa interface User
 interface User {
@@ -187,7 +187,7 @@ export default function ProfilePage() {
         <div className="flex items-center gap-4">
           <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-400 to-blue-400 flex items-center justify-center text-white text-4xl font-bold shadow overflow-hidden">
             {avatar ? (
-              <img src={avatar} alt="avatar" className="w-full h-full object-cover rounded-full" />
+              <Image src={avatar} alt="avatar" width={80} height={80} className="w-full h-full object-cover rounded-full" />
             ) : (
               user.username?.[0]?.toUpperCase() || <User2 className="w-10 h-10" />
             )}

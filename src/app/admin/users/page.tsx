@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import { toast } from "sonner";
+import Image from "next/image";
 
 interface User {
   _id: string;
@@ -160,7 +161,7 @@ export default function AdminUsersPage() {
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-4">
                 {editData.avatar ? (
-                  <img src={editData.avatar} alt="avatar" className="w-16 h-16 rounded-full object-cover border" />
+                  <Image src={editData.avatar} alt="avatar" className="w-16 h-16 rounded-full object-cover border" width={64} height={64} />
                 ) : (
                   <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 font-bold text-2xl border">
                     ?
@@ -263,7 +264,7 @@ export default function AdminUsersPage() {
                 >
                   <td className="py-2 px-4">
                     {user.avatar ? (
-                      <img src={user.avatar} alt="avatar" className="w-10 h-10 rounded-full object-cover border" />
+                      <Image src={user.avatar} alt="avatar" className="w-10 h-10 rounded-full object-cover border" width={64} height={64} />
                     ) : (
                       <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 font-bold text-lg border">
                         ?

@@ -5,6 +5,7 @@ import { Avatar } from "@/components/ui/avatar";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LogOut, User2 } from "lucide-react";
+import Image from "next/image";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -46,7 +47,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       setChecked(true);
     }
     checkAdmin();
-    // eslint-disable-next-line
   }, [router, pathname]);
 
   // Đóng dropdown khi click ngoài
@@ -75,7 +75,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div>
           <Link href="/admin" className="flex items-center gap-2 px-6 py-6 border-b hover:bg-blue-100 transition-colors group">
             <Avatar className="group-hover:scale-110 group-hover:ring-2 group-hover:ring-blue-400 transition-transform">
-              <img src="/favicon.ico" alt="Admin" />
+              <Image src="/favicon.ico" alt="Admin" width={32} height={32} />
             </Avatar>
             <span className="font-bold text-lg group-hover:text-blue-700 transition-colors">Admin Panel</span>
           </Link>

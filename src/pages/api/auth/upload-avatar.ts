@@ -4,6 +4,14 @@ import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecret';
 
+// Định nghĩa interface cho payload JWT
+interface JwtPayload {
+  id: string;
+  username: string;
+  role: string;
+  [key: string]: unknown;
+}
+
 export const config = {
   api: {
     bodyParser: {
@@ -20,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (typeof avatar !== 'string' || !avatar.startsWith('data:image/')) return res.status(400).json({ message: 'Ảnh không hợp lệ' });
   try {
     const token = auth.replace('Bearer ', '');
-    const payload = jwt.verify(token, JWT_SECRET) as any;
+    const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
     const client = await clientPromise;
     const db = client.db();
     const users = db.collection('users');

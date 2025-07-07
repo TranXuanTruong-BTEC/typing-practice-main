@@ -130,35 +130,6 @@ const TextsAdminPage = () => {
     return matchCategory && matchLanguage;
   });
 
-  // Xử lý submit form thêm bài tập
-  const handleAddText = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const res = await fetch("/api/add-text", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: newTitle,
-          text: newText,
-          category: newCategory,
-          language: newLanguage,
-          difficulty: newDifficulty,
-        }),
-      });
-      if (!res.ok) throw new Error("Lỗi khi thêm bài tập");
-      setNewTitle("");
-      setNewText("");
-      setNewCategory("");
-      setNewLanguage("");
-      setNewDifficulty(DIFFICULTY_OPTIONS[0]);
-      toast.success("Đã thêm bài tập mới!");
-      await fetchTexts();
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
-      toast.error(msg || "Lỗi không xác định");
-    }
-  };
-
   // Hàm mở modal edit
   const handleEdit = (row: TypingText) => {
     setEditData({ ...row });

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { BookText, Layers, Languages, BarChart3 } from "lucide-react";
 import Link from "next/link";
 import { BarChart, Bar, XAxis, YAxis, Tooltip as RTooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
-import { useRouter } from "next/navigation";
 
 const CARD_STYLE = "flex items-center gap-4 bg-white rounded-xl shadow p-6 min-w-[180px] flex-1 border border-gray-100";
 const COLORS = ["#3b82f6", "#a78bfa", "#f472b6", "#34d399", "#fbbf24", "#6366f1", "#f87171", "#10b981", "#f59e42", "#818cf8"];
@@ -15,7 +14,7 @@ interface TypingText {
   category?: string;
   language?: string;
   difficulty?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export default function AdminDashboard() {

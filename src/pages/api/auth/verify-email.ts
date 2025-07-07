@@ -4,11 +4,19 @@ import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecret';
 
+// Định nghĩa interface cho payload JWT
+interface JwtPayload {
+  id: string;
+  username: string;
+  role: string;
+  [key: string]: unknown;
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { token } = req.query;
   if (!token || typeof token !== 'string') return res.redirect('/profile?verified=0');
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as any;
+    const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
     const client = await clientPromise;
     const db = client.db();
     const users = db.collection('users');
