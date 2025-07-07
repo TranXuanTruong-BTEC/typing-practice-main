@@ -20,7 +20,7 @@ export default function HomePage() {
   const [practiceMode, setPracticeMode] = useState<PracticeMode>({ mode: 'full' });
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [userInfo, setUserInfo] = useState<any>(null);
+  const [userInfo, setUserInfo] = useState<Record<string, unknown> | null>(null);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export default function HomePage() {
       setIsUserLoggedIn(!!token);
       if (token) {
         try {
-          const decoded: any = jwtDecode(token);
+          const decoded = jwtDecode<Record<string, unknown>>(token);
           setUserInfo(decoded);
         } catch {}
       } else {

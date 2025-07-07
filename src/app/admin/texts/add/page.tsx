@@ -47,8 +47,9 @@ export default function AddTextPage() {
       setNewDifficulty(DIFFICULTY_OPTIONS[0]);
       toast.success("Đã thêm bài tập mới!");
       setTimeout(() => router.push("/admin/texts"), 800);
-    } catch (err: any) {
-      toast.error(err.message || "Lỗi không xác định");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      toast.error(msg || "Lỗi không xác định");
     } finally {
       setAdding(false);
     }

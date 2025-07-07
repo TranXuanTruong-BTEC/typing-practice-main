@@ -1,12 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
 import { toast } from "sonner";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface TypingText {
   _id: string;
@@ -97,12 +95,8 @@ const TextsAdminPage = () => {
   const [newCategory, setNewCategory] = useState("");
   const [newLanguage, setNewLanguage] = useState("");
   const [newDifficulty, setNewDifficulty] = useState(DIFFICULTY_OPTIONS[0]);
-  const [adding, setAdding] = useState(false);
-  const [addError, setAddError] = useState("");
-  const [addSuccess, setAddSuccess] = useState("");
 
-  const [editRow, setEditRow] = useState<string | null>(null);
-  const [editData, setEditData] = useState<any>({});
+  const [editData, setEditData] = useState<Partial<TypingText>>({});
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -117,8 +111,9 @@ const TextsAdminPage = () => {
       if (!res.ok) throw new Error("Lỗi khi lấy dữ liệu");
       const data = await res.json();
       setTexts(Array.isArray(data) ? data : data.texts || []);
-    } catch (err: any) {
-      setError(err.message || "Lỗi không xác định");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setError(msg || "Lỗi không xác định");
     } finally {
       setLoading(false);
     }
@@ -138,9 +133,6 @@ const TextsAdminPage = () => {
   // Xử lý submit form thêm bài tập
   const handleAddText = async (e: React.FormEvent) => {
     e.preventDefault();
-    setAddError("");
-    setAddSuccess("");
-    setAdding(true);
     try {
       const res = await fetch("/api/add-text", {
         method: "POST",
@@ -159,20 +151,16 @@ const TextsAdminPage = () => {
       setNewCategory("");
       setNewLanguage("");
       setNewDifficulty(DIFFICULTY_OPTIONS[0]);
-      setAddSuccess("Thêm bài tập thành công!");
       toast.success("Đã thêm bài tập mới!");
       await fetchTexts();
-    } catch (err: any) {
-      setAddError(err.message || "Lỗi không xác định");
-      toast.error(err.message || "Lỗi không xác định");
-    } finally {
-      setAdding(false);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      toast.error(msg || "Lỗi không xác định");
     }
   };
 
   // Hàm mở modal edit
   const handleEdit = (row: TypingText) => {
-    setEditRow(row._id);
     setEditData({ ...row });
     setModalOpen(true);
   };
@@ -188,10 +176,10 @@ const TextsAdminPage = () => {
       if (!res.ok) throw new Error("Lỗi khi cập nhật bài tập");
       toast.success("Đã cập nhật bài tập!");
       setModalOpen(false);
-      setEditRow(null);
       await fetchTexts();
-    } catch (err: any) {
-      toast.error(err.message || "Lỗi không xác định");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      toast.error(msg || "Lỗi không xác định");
     }
   };
 
@@ -208,8 +196,9 @@ const TextsAdminPage = () => {
       if (!res.ok) throw new Error("Lỗi khi xóa bài tập");
       toast.success("Đã xóa bài tập!");
       await fetchTexts();
-    } catch (err: any) {
-      toast.error(err.message || "Lỗi không xác định");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      toast.error(msg || "Lỗi không xác định");
     } finally {
       setDeletingId(null);
     }
