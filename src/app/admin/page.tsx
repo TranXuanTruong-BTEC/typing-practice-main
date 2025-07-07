@@ -11,17 +11,13 @@ const COLORS = ["#3b82f6", "#a78bfa", "#f472b6", "#34d399", "#fbbf24", "#6366f1"
 export default function AdminDashboard() {
   const [texts, setTexts] = useState<any[]>([]);
   const router = useRouter();
-  // Mock số liệu
-  const totalCategories = 4;
-  const totalLanguages = 10;
-  const totalSessions = 1234;
-  // --- Thêm mock số liệu user và traffic ---
-  const totalUsers = 5678; // Số user tổng
-  const activeUsers = 123; // User đang hoạt động
-  const traffic = 4321; // Lưu lượng truy cập
+  const [stats, setStats] = useState({ totalUsers: 0, activeUsers: 0, totalSessions: 0, traffic: 0 });
 
   useEffect(() => {
     fetchRecentTexts();
+    fetchStats();
+    const interval = setInterval(fetchStats, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   const fetchRecentTexts = async () => {
@@ -32,6 +28,15 @@ export default function AdminDashboard() {
       setTexts(Array.isArray(data) ? data : (data.texts || []));
     } catch {}
   };
+
+  async function fetchStats() {
+    try {
+      const res = await fetch("/api/admin/stats");
+      if (!res.ok) return;
+      const data = await res.json();
+      setStats(data);
+    } catch {}
+  }
 
   // Thống kê theo thể loại
   const categoryStats = Object.entries(
@@ -90,30 +95,30 @@ export default function AdminDashboard() {
         <div className={CARD_STYLE}>
           <BarChart3 className="w-8 h-8 text-green-500" />
           <div>
-            <div className="text-2xl font-bold">{totalSessions}</div>
+            <div className="text-2xl font-bold">{stats.totalSessions}</div>
             <div className="text-gray-500 text-sm">Lượt luyện tập</div>
           </div>
         </div>
-        {/* --- Card mock số liệu user/traffic --- */}
+        {/* --- Card real-time user/traffic --- */}
         <div className={CARD_STYLE}>
           <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a4 4 0 0 0-3-3.87M9 20H4v-2a4 4 0 0 1 3-3.87m6-2.13a4 4 0 1 0-8 0 4 4 0 0 0 8 0zm6 2.13A4 4 0 0 0 17 20m0 0a4 4 0 0 0-3-3.87" /></svg>
           <div>
-            <div className="text-2xl font-bold">{totalUsers}</div>
-            <div className="text-gray-500 text-sm">Tổng user <span className="text-xs text-gray-400">(demo)</span></div>
+            <div className="text-2xl font-bold">{stats.totalUsers}</div>
+            <div className="text-gray-500 text-sm">Tổng user</div>
           </div>
         </div>
         <div className={CARD_STYLE}>
           <svg className="w-8 h-8 text-lime-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4" /><path strokeLinecap="round" strokeLinejoin="round" d="M6 21v-2a4 4 0 0 1 4-4h0a4 4 0 0 1 4 4v2" /></svg>
           <div>
-            <div className="text-2xl font-bold">{activeUsers}</div>
-            <div className="text-gray-500 text-sm">User đang hoạt động <span className="text-xs text-gray-400">(demo)</span></div>
+            <div className="text-2xl font-bold">{stats.activeUsers}</div>
+            <div className="text-gray-500 text-sm">User đang hoạt động</div>
           </div>
         </div>
         <div className={CARD_STYLE}>
           <svg className="w-8 h-8 text-cyan-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 3v18h18" /><path strokeLinecap="round" strokeLinejoin="round" d="M7 15l3-3 4 4 5-5" /></svg>
           <div>
-            <div className="text-2xl font-bold">{traffic}</div>
-            <div className="text-gray-500 text-sm">Lưu lượng truy cập <span className="text-xs text-gray-400">(demo)</span></div>
+            <div className="text-2xl font-bold">{stats.traffic}</div>
+            <div className="text-gray-500 text-sm">Lưu lượng truy cập 24h</div>
           </div>
         </div>
       </div>
