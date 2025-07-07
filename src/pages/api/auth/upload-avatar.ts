@@ -35,6 +35,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const users = db.collection('users');
     await users.updateOne({ _id: typeof payload.id === 'string' ? new ObjectId(payload.id) : payload.id }, { $set: { avatar } });
     const user = await users.findOne({ _id: typeof payload.id === 'string' ? new ObjectId(payload.id) : payload.id });
+    if (!user) {
+      return res.status(500).json({ message: 'Không tìm thấy user sau khi cập nhật.' });
+    }
     const newToken = jwt.sign({ username: user.username, gmail: user.gmail, id: user._id, avatar: user.avatar || null, emailVerified: !!user.emailVerified }, JWT_SECRET, { expiresIn: '7d' });
     return res.status(200).json({ avatar, token: newToken });
   } catch {
