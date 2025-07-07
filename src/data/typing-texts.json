@@ -1,0 +1,83 @@
+[
+  {
+    "id": "1",
+    "title": "Công nghệ thông tin",
+    "category": "Công nghệ",
+    "difficulty": "easy",
+    "language": "vi",
+    "text": "Công nghệ thông tin đã thay đổi cách chúng ta sống và làm việc. Internet kết nối mọi người trên toàn thế giới. Máy tính và điện thoại thông minh trở thành công cụ không thể thiếu trong cuộc sống hiện đại."
+  },
+  {
+    "id": "2",
+    "title": "Lập trình web",
+    "category": "Công nghệ",
+    "difficulty": "medium",
+    "language": "vi",
+    "text": "Lập trình web là quá trình tạo ra các trang web và ứng dụng web. HTML, CSS và JavaScript là những ngôn ngữ cơ bản nhất. React, Vue và Angular là các framework phổ biến cho frontend development."
+  },
+  {
+    "id": "3",
+    "title": "Trí tuệ nhân tạo",
+    "category": "Công nghệ",
+    "difficulty": "hard",
+    "language": "vi",
+    "text": "Trí tuệ nhân tạo là lĩnh vực khoa học máy tính tập trung vào việc tạo ra các hệ thống có khả năng thực hiện các tác vụ thường đòi hỏi trí thông minh của con người. Machine learning và deep learning là những nhánh quan trọng của AI."
+  },
+  {
+    "id": "4",
+    "title": "Văn học Việt Nam",
+    "category": "Văn học",
+    "difficulty": "easy",
+    "language": "vi",
+    "text": "Văn học Việt Nam có lịch sử lâu đời và phong phú. Từ thơ ca dân gian đến văn học hiện đại, mỗi thời kỳ đều có những tác phẩm tiêu biểu. Truyện Kiều của Nguyễn Du là kiệt tác văn học dân tộc."
+  },
+  {
+    "id": "5",
+    "title": "Thơ ca",
+    "category": "Văn học",
+    "difficulty": "medium",
+    "language": "vi",
+    "text": "Thơ ca là nghệ thuật sử dụng ngôn từ một cách có nhịp điệu và hình ảnh. Thơ Việt Nam có nhiều thể loại như thơ lục bát, thơ Đường luật, thơ tự do. Mỗi bài thơ đều chứa đựng cảm xúc và tư tưởng của tác giả."
+  },
+  {
+    "id": "6",
+    "title": "Tin tức thời sự",
+    "category": "Tin tức",
+    "difficulty": "easy",
+    "language": "vi",
+    "text": "Tin tức thời sự cập nhật những sự kiện quan trọng trong nước và quốc tế. Báo chí đóng vai trò quan trọng trong việc thông tin và định hướng dư luận. Độc giả cần có khả năng phân tích và đánh giá thông tin."
+  },
+  {
+    "id": "7",
+    "title": "Technology News",
+    "category": "Technology",
+    "difficulty": "medium",
+    "language": "en",
+    "text": "Technology continues to evolve at an unprecedented pace. Artificial intelligence and machine learning are transforming industries worldwide. Companies are investing heavily in digital transformation to stay competitive in the modern market."
+  },
+  {
+    "id": "8",
+    "title": "Programming Basics",
+    "category": "Technology",
+    "difficulty": "easy",
+    "language": "en",
+    "text": "Programming is the process of creating instructions for computers to follow. Popular programming languages include Python, JavaScript, and Java. Learning to code opens up many career opportunities in the tech industry."
+  },
+  {
+    "id": "9",
+    "title": "Web Development",
+    "category": "Technology",
+    "difficulty": "hard",
+    "language": "en",
+    "text": "Web development involves creating websites and web applications. Frontend development focuses on user interface and experience. Backend development handles server-side logic and database management. Full-stack developers work on both frontend and backend."
+  },
+  {
+    "id": "10",
+    "title": "Business and Finance",
+    "category": "Business",
+    "difficulty": "medium",
+    "language": "en",
+    "text": "Business and finance are fundamental aspects of the global economy. Companies must adapt to changing market conditions and consumer preferences. Financial literacy is essential for making informed investment decisions."
+  }
+
+] 
