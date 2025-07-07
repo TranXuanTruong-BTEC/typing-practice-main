@@ -21,22 +21,30 @@ export default function ProfilePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  useEffect(() => {
+  async function fetchUserInfo() {
     const token = localStorage.getItem("user_token");
-    if (token) {
-      try {
-        const decoded: any = jwtDecode(token);
-        setUser(decoded);
-        setGmail(decoded.gmail || "");
-        setAvatar(decoded.avatar || null);
-        setEmailVerified(decoded.emailVerified || false);
-      } catch {}
-    }
+    if (!token) return;
+    try {
+      const res = await fetch("/api/auth/me", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      setUser(data);
+      setGmail(data.gmail || "");
+      setAvatar(data.avatar || null);
+      setEmailVerified(!!data.emailVerified);
+    } catch {}
+  }
+
+  useEffect(() => {
+    fetchUserInfo();
     // Thông báo xác thực email
     const verified = searchParams.get("verified");
     if (verified === "1") {
       setMsg("Xác thực email thành công!");
       setEmailVerified(true);
+      fetchUserInfo();
     } else if (verified === "0") {
       setErr("Xác thực email thất bại hoặc token hết hạn!");
     }
@@ -63,6 +71,7 @@ export default function ProfilePage() {
         setMsg("Cập nhật gmail thành công! Đã gửi email xác thực.");
         setEmailVerified(false);
         sendVerifyEmail();
+        fetchUserInfo();
       }
     } catch {
       setErr("Lỗi kết nối server");
@@ -125,6 +134,7 @@ export default function ProfilePage() {
       const data = await res.json();
       if (!res.ok) setErr(data.message || "Upload thất bại");
       else setMsg("Cập nhật avatar thành công!");
+      fetchUserInfo();
     } catch {
       setErr("Lỗi kết nối server");
     }
