@@ -4,8 +4,18 @@ import { jwtDecode } from "jwt-decode";
 import { Loader2, User2, Mail, KeyRound, LogOut, History } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 
+// Định nghĩa interface User
+interface User {
+  id: string;
+  username: string;
+  gmail?: string;
+  avatar?: string;
+  emailVerified?: boolean;
+  [key: string]: any; // Nếu có thêm field động, có thể thu hẹp lại nếu biết rõ schema
+}
+
 export default function ProfilePage() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [gmail, setGmail] = useState("");
   const [oldPass, setOldPass] = useState("");
   const [newPass, setNewPass] = useState("");
