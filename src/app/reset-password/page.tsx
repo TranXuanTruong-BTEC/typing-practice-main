@@ -1,8 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
   const [newPass, setNewPass] = useState("");
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
@@ -88,5 +88,13 @@ export default function ResetPasswordPage() {
         </div>
       </form>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-gray-400">Đang tải...</div>}>
+      <ResetPasswordContent />
+    </Suspense>
   );
 } 
