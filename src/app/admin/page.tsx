@@ -230,7 +230,7 @@ export default function AdminDashboard() {
               <tr><td colSpan={4} className="text-center text-gray-400 py-4">Chưa có dữ liệu</td></tr>
             )}
             {texts.slice(-5).reverse().map((text) => (
-              <tr key={text._id} className="border-b last:border-b-0 hover:bg-blue-50/40 transition-colors">
+              <tr key={String(text._id)} className="border-b last:border-b-0 hover:bg-blue-50/40 transition-colors">
                 <td className="py-2 px-3 font-medium text-gray-900 align-top max-w-[160px] truncate" title={text.title}>{text.title}</td>
                 <td className="py-2 px-3 text-gray-700 align-top">{text.category || '-'}</td>
                 <td className="py-2 px-3 text-gray-700 align-top">{text.language || '-'}</td>
