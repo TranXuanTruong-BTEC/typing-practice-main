@@ -50,15 +50,17 @@ export default function ProfilePage() {
   useEffect(() => {
     fetchUserInfo();
     // Thông báo xác thực email
-    const verified = searchParams.get("verified");
-    const newToken = searchParams.get("token");
-    if (verified === "1") {
-      setMsg("Xác thực email thành công!");
-      setEmailVerified(true);
-      if (newToken) localStorage.setItem("user_token", newToken);
-      fetchUserInfo();
-    } else if (verified === "0") {
-      setErr("Xác thực email thất bại hoặc token hết hạn!");
+    if (searchParams) {
+      const verified = searchParams.get("verified");
+      const newToken = searchParams.get("token");
+      if (verified === "1") {
+        setMsg("Xác thực email thành công!");
+        setEmailVerified(true);
+        if (newToken) localStorage.setItem("user_token", newToken);
+        fetchUserInfo();
+      } else if (verified === "0") {
+        setErr("Xác thực email thất bại hoặc token hết hạn!");
+      }
     }
   }, [searchParams]);
 
