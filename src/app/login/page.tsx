@@ -21,7 +21,11 @@ export default function LoginPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.message || "Đăng nhập thất bại");
+        if (data.reason) {
+          setError(`${data.message}: ${data.reason}`);
+        } else {
+          setError(data.message || "Đăng nhập thất bại");
+        }
       } else {
         localStorage.setItem("user_token", data.token);
         router.push("/"); // hoặc chuyển hướng sang dashboard user nếu có

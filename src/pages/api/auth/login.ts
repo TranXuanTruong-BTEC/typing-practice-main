@@ -17,6 +17,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!user) return res.status(401).json({ message: 'Sai tên đăng nhập hoặc mật khẩu' });
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(401).json({ message: 'Sai tên đăng nhập hoặc mật khẩu' });
+    if (user.status === "banned") {
+      return res.status(403).json({ message: "Tài khoản đã bị ban", reason: user.banReason || "Không rõ lý do" });
+    }
     // Tạo JWT
     const token = jwt.sign({ username: user.username, gmail: user.gmail, id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
     return res.status(200).json({ token });
