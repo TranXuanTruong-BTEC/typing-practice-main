@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import clientPromise from '@/lib/mongodb';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { ObjectId } from 'mongodb';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecret';
 
@@ -24,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const client = await clientPromise;
     const db = client.db();
     const users = db.collection('users');
-    const user = await users.findOne({ _id: typeof payload.id === 'string' ? new (require('mongodb').ObjectId)(payload.id) : payload.id });
+    const user = await users.findOne({ _id: typeof payload.id === 'string' ? new ObjectId(payload.id) : payload.id });
     if (!user) return res.status(404).json({ message: 'Không tìm thấy user' });
     const match = await bcrypt.compare(oldPassword, user.password);
     if (!match) return res.status(401).json({ message: 'Mật khẩu hiện tại không đúng' });

@@ -11,7 +11,7 @@ interface User {
   gmail?: string;
   avatar?: string;
   emailVerified?: boolean;
-  [key: string]: any; // Nếu có thêm field động, có thể thu hẹp lại nếu biết rõ schema
+  [key: string]: unknown; // Nếu có thêm field động, có thể thu hẹp lại nếu biết rõ schema
 }
 
 export default function ProfilePage() {
