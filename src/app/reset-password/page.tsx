@@ -10,7 +10,7 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+  const token = searchParams ? searchParams.get("token") : null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
