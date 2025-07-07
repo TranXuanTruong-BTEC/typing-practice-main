@@ -40,8 +40,9 @@ export default function AdminUsersPage() {
       if (!res.ok) throw new Error("Không thể lấy danh sách user");
       const data = await res.json();
       setUsers(data);
-    } catch (e: any) {
-      setError(e.message || "Lỗi không xác định");
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      setError(msg || "Lỗi không xác định");
     } finally {
       setLoading(false);
     }
@@ -93,8 +94,9 @@ export default function AdminUsersPage() {
       setEditData({});
       fetchUsers();
       toast.success("Cập nhật user thành công!");
-    } catch (e: any) {
-      toast.error(e.message || "Lỗi không xác định");
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      toast.error(msg || "Lỗi không xác định");
     } finally {
       setSaving(false);
     }
@@ -127,8 +129,9 @@ export default function AdminUsersPage() {
       setBanReason("");
       fetchUsers();
       toast.success("Đã ban user thành công!");
-    } catch (e: any) {
-      toast.error(e.message || "Lỗi không xác định");
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      toast.error(msg || "Lỗi không xác định");
     } finally {
       setBanLoading(false);
     }
