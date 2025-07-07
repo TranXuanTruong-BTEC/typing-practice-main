@@ -32,6 +32,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const hash = await bcrypt.hash(newPassword, 10);
     await users.updateOne({ _id: user._id }, { $set: { password: hash } });
     const updatedUser = await users.findOne({ _id: user._id });
+    if (!updatedUser) {
+      return res.status(500).json({ message: 'Không tìm thấy user sau khi cập nhật.' });
+    }
     const newToken = jwt.sign({ username: updatedUser.username, gmail: updatedUser.gmail, id: updatedUser._id, avatar: updatedUser.avatar || null, emailVerified: !!updatedUser.emailVerified }, JWT_SECRET, { expiresIn: '7d' });
     return res.status(200).json({ message: 'Đổi mật khẩu thành công', token: newToken });
   } catch {
