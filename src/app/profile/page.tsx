@@ -1,20 +1,20 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { Loader2, User2, Mail, KeyRound, LogOut, History } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 
-// Định nghĩa interface User
-interface User {
-  id: string;
-  username: string;
-  gmail?: string;
-  avatar?: string;
-  emailVerified?: boolean;
-  [key: string]: unknown; // Nếu có thêm field động, có thể thu hẹp lại nếu biết rõ schema
-}
+function ProfileContent() {
+  // Định nghĩa interface User
+  interface User {
+    id: string;
+    username: string;
+    gmail?: string;
+    avatar?: string;
+    emailVerified?: boolean;
+    [key: string]: unknown; // Nếu có thêm field động, có thể thu hẹp lại nếu biết rõ schema
+  }
 
-export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
   const [gmail, setGmail] = useState("");
   const [oldPass, setOldPass] = useState("");
@@ -351,5 +351,13 @@ export default function ProfilePage() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-gray-400">Đang tải...</div>}>
+      <ProfileContent />
+    </Suspense>
   );
 } 
