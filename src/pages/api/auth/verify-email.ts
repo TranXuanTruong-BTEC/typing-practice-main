@@ -15,7 +15,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const user = await users.findOne({ _id: typeof payload.id === 'string' ? new (require('mongodb').ObjectId)(payload.id) : payload.id });
     if (!user || user.emailVerifyToken !== token) return res.redirect('/profile?verified=0');
     await users.updateOne({ _id: user._id }, { $set: { emailVerified: true }, $unset: { emailVerifyToken: '' } });
-    return res.redirect('/profile?verified=1');
+    const newToken = jwt.sign({ username: user.username, gmail: user.gmail, id: user._id, avatar: user.avatar || null, emailVerified: true }, JWT_SECRET, { expiresIn: '7d' });
+    return res.redirect(`/profile?verified=1&token=${newToken}`);
   } catch (e) {
     return res.redirect('/profile?verified=0');
   }

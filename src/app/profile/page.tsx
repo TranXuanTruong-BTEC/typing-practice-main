@@ -41,9 +41,11 @@ export default function ProfilePage() {
     fetchUserInfo();
     // Thông báo xác thực email
     const verified = searchParams.get("verified");
+    const newToken = searchParams.get("token");
     if (verified === "1") {
       setMsg("Xác thực email thành công!");
       setEmailVerified(true);
+      if (newToken) localStorage.setItem("user_token", newToken);
       fetchUserInfo();
     } else if (verified === "0") {
       setErr("Xác thực email thất bại hoặc token hết hạn!");
@@ -72,6 +74,7 @@ export default function ProfilePage() {
         setEmailVerified(false);
         sendVerifyEmail();
         fetchUserInfo();
+        if (data.token) localStorage.setItem("user_token", data.token);
       }
     } catch {
       setErr("Lỗi kết nối server");
@@ -98,7 +101,10 @@ export default function ProfilePage() {
       });
       const data = await res.json();
       if (!res.ok) setErr(data.message || "Đổi mật khẩu thất bại");
-      else setMsg("Đổi mật khẩu thành công!");
+      else {
+        setMsg("Đổi mật khẩu thành công!");
+        if (data.token) localStorage.setItem("user_token", data.token);
+      }
     } catch {
       setErr("Lỗi kết nối server");
     }
@@ -133,8 +139,11 @@ export default function ProfilePage() {
       });
       const data = await res.json();
       if (!res.ok) setErr(data.message || "Upload thất bại");
-      else setMsg("Cập nhật avatar thành công!");
-      fetchUserInfo();
+      else {
+        setMsg("Cập nhật avatar thành công!");
+        fetchUserInfo();
+        if (data.token) localStorage.setItem("user_token", data.token);
+      }
     } catch {
       setErr("Lỗi kết nối server");
     }
