@@ -89,13 +89,6 @@ const TextsAdminPage = () => {
   const [categoryFilter, setCategoryFilter] = useState<string>("");
   const [languageFilter, setLanguageFilter] = useState<string>("");
 
-  // State cho form thêm bài tập
-  const [newTitle, setNewTitle] = useState("");
-  const [newText, setNewText] = useState("");
-  const [newCategory, setNewCategory] = useState("");
-  const [newLanguage, setNewLanguage] = useState("");
-  const [newDifficulty, setNewDifficulty] = useState(DIFFICULTY_OPTIONS[0]);
-
   const [editData, setEditData] = useState<Partial<TypingText>>({});
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);

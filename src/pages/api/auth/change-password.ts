@@ -33,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const updatedUser = await users.findOne({ _id: user._id });
     const newToken = jwt.sign({ username: updatedUser.username, gmail: updatedUser.gmail, id: updatedUser._id, avatar: updatedUser.avatar || null, emailVerified: !!updatedUser.emailVerified }, JWT_SECRET, { expiresIn: '7d' });
     return res.status(200).json({ message: 'Đổi mật khẩu thành công', token: newToken });
-  } catch (e) {
+  } catch {
     return res.status(401).json({ message: 'Token không hợp lệ hoặc lỗi server' });
   }
 } 

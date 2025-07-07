@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       html: `<p>Chào ${user.username},</p><p>Nhấn vào link sau để đặt lại mật khẩu mới cho tài khoản của bạn (có hiệu lực trong 30 phút):</p><p><a href="${resetUrl}">${resetUrl}</a></p><p>Nếu bạn không yêu cầu, hãy bỏ qua email này.</p>`
     });
     return res.status(200).json({ message: 'Đã gửi email khôi phục mật khẩu' });
-  } catch (e) {
+  } catch {
     return res.status(500).json({ message: 'Lỗi gửi email hoặc server' });
   }
 } 

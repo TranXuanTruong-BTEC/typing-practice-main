@@ -140,8 +140,8 @@ export default function AdminDashboard() {
               <YAxis allowDecimals={false} fontSize={13} />
               <RTooltip />
               <Bar dataKey="value" fill="#6366f1">
-                {categoryStats.map((entry, idx) => (
-                  <Cell key={entry.name} fill={COLORS[idx % COLORS.length]} />
+                {categoryStats.map((entry) => (
+                  <Cell key={entry.name} fill={COLORS[entry.name.charCodeAt(0) % COLORS.length]} />
                 ))}
               </Bar>
             </BarChart>
@@ -152,8 +152,8 @@ export default function AdminDashboard() {
           <ResponsiveContainer width="100%" height={260}>
             <PieChart>
               <Pie data={languageStats} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
-                {languageStats.map((entry, idx) => (
-                  <Cell key={entry.name} fill={COLORS[idx % COLORS.length]} />
+                {languageStats.map((entry) => (
+                  <Cell key={entry.name} fill={COLORS[entry.name.charCodeAt(0) % COLORS.length]} />
                 ))}
               </Pie>
               <Legend />
@@ -167,9 +167,9 @@ export default function AdminDashboard() {
           <h3 className="font-semibold text-lg mb-4">Top 3 thể loại</h3>
           <ul className="space-y-2">
             {topCategories.length === 0 && <li className="text-gray-400">Chưa có dữ liệu</li>}
-            {topCategories.map((cat, idx) => (
+            {topCategories.map((cat) => (
               <li key={cat.name} className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full flex items-center justify-center text-white font-bold" style={{background: COLORS[idx % COLORS.length]}}>{idx+1}</span>
+                <span className="w-6 h-6 rounded-full flex items-center justify-center text-white font-bold" style={{background: COLORS[cat.name.charCodeAt(0) % COLORS.length]}}>{cat.name}</span>
                 <span className="font-medium">{cat.name}</span>
                 <span className="ml-auto text-gray-500">{cat.value} bài tập</span>
               </li>
@@ -180,9 +180,9 @@ export default function AdminDashboard() {
           <h3 className="font-semibold text-lg mb-4">Top 3 ngôn ngữ</h3>
           <ul className="space-y-2">
             {topLanguages.length === 0 && <li className="text-gray-400">Chưa có dữ liệu</li>}
-            {topLanguages.map((lang, idx) => (
+            {topLanguages.map((lang) => (
               <li key={lang.name} className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full flex items-center justify-center text-white font-bold" style={{background: COLORS[idx % COLORS.length]}}>{idx+1}</span>
+                <span className="w-6 h-6 rounded-full flex items-center justify-center text-white font-bold" style={{background: COLORS[lang.name.charCodeAt(0) % COLORS.length]}}>{lang.name}</span>
                 <span className="font-medium">{lang.name}</span>
                 <span className="ml-auto text-gray-500">{lang.value} bài tập</span>
               </li>
@@ -201,7 +201,7 @@ export default function AdminDashboard() {
           </thead>
           <tbody>
             {difficultyStats.length === 0 && <tr><td colSpan={2} className="text-gray-400 py-3">Chưa có dữ liệu</td></tr>}
-            {difficultyStats.map((dif, idx) => (
+            {difficultyStats.map((dif) => (
               <tr key={dif.name} className="border-b last:border-b-0">
                 <td className="py-2 px-3">{dif.name}</td>
                 <td className="py-2 px-3">{dif.value}</td>

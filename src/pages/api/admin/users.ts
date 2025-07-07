@@ -68,7 +68,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       const { _id, gmail, role, status, avatar, banReason } = req.body;
       if (!_id) return res.status(400).json({ message: 'Thiếu _id user' });
-      const update: any = {};
+      const update: unknown = {};
       if (gmail !== undefined) update.gmail = gmail;
       if (role !== undefined) update.role = role;
       if (status !== undefined) update.status = status;

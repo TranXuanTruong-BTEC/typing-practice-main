@@ -36,7 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const user = await users.findOne({ _id: typeof payload.id === 'string' ? new (require('mongodb').ObjectId)(payload.id) : payload.id });
     const newToken = jwt.sign({ username: user.username, gmail: user.gmail, id: user._id, avatar: user.avatar || null, emailVerified: !!user.emailVerified }, JWT_SECRET, { expiresIn: '7d' });
     return res.status(200).json({ avatar, token: newToken });
-  } catch (e) {
+  } catch {
     return res.status(401).json({ message: 'Token không hợp lệ hoặc lỗi server' });
   }
 } 

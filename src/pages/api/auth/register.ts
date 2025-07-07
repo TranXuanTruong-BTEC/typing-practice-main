@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const hash = await bcrypt.hash(password, 10);
     await users.insertOne({ username, password: hash, gmail, createdAt: new Date() });
     return res.status(201).json({ message: 'Đăng ký thành công' });
-  } catch (e) {
+  } catch {
     return res.status(500).json({ message: 'Lỗi server' });
   }
 } 

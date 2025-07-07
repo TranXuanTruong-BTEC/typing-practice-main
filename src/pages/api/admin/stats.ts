@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const trafficCount = await traffic.countDocuments({ time: { $gte: oneDayAgo } });
     return res.status(200).json({ totalUsers, activeUsers, totalSessions, traffic: trafficCount });
-  } catch (e) {
+  } catch {
     return res.status(500).json({ message: 'Lỗi server' });
   }
 } 

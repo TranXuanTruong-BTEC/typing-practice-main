@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await users.updateOne({ _id: user._id }, { $set: { emailVerified: true }, $unset: { emailVerifyToken: '' } });
     const newToken = jwt.sign({ username: user.username, gmail: user.gmail, id: user._id, avatar: user.avatar || null, emailVerified: true }, JWT_SECRET, { expiresIn: '7d' });
     return res.redirect(`/profile?verified=1&token=${newToken}`);
-  } catch (e) {
+  } catch {
     return res.redirect('/profile?verified=0');
   }
 } 

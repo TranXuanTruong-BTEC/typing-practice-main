@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       id: user._id,
       role: user.role || "user"
     });
-  } catch (e) {
+  } catch {
     return res.status(401).json({ message: 'Token không hợp lệ hoặc hết hạn' });
   }
 } 

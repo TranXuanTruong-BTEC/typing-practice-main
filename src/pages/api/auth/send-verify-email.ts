@@ -44,7 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       html: `<p>Chào ${user.username},</p><p>Nhấn vào link sau để xác thực email phục hồi cho tài khoản của bạn:</p><p><a href="${verifyUrl}">${verifyUrl}</a></p><p>Nếu bạn không yêu cầu, hãy bỏ qua email này.</p>`
     });
     return res.status(200).json({ message: 'Đã gửi email xác thực' });
-  } catch (e) {
+  } catch {
     return res.status(500).json({ message: 'Lỗi gửi email hoặc token không hợp lệ' });
   }
 } 

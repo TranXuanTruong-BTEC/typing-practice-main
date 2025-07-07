@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const hash = await bcrypt.hash(newPassword, 10);
     await users.updateOne({ _id: user._id }, { $set: { password: hash }, $unset: { resetPasswordToken: '' } });
     return res.status(200).json({ message: 'Đặt lại mật khẩu thành công' });
-  } catch (e) {
+  } catch {
     return res.status(400).json({ message: 'Token không hợp lệ hoặc đã hết hạn' });
   }
 } 
