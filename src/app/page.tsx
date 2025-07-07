@@ -169,14 +169,14 @@ export default function HomePage() {
                     className="flex items-center gap-2 px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold rounded-lg border border-indigo-200 transition-colors shadow-sm focus:outline-none ml-2"
                   >
                     <User2 className="w-5 h-5" />
-                    <span className="max-w-[120px] truncate">{userInfo.username}</span>
+                    <span className="max-w-[120px] truncate">{String(userInfo.username)}</span>
                     <svg className={`w-4 h-4 ml-1 transition-transform ${showDropdown ? "rotate-180" : "rotate-0"}`} viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.085l3.71-3.855a.75.75 0 1 1 1.08 1.04l-4.24 4.4a.75.75 0 0 1-1.08 0l-4.24-4.4a.75.75 0 0 1 .02-1.06z" clipRule="evenodd" /></svg>
                   </button>
                   {showDropdown && (
                     <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-lg z-50 animate-fade-in">
                       <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-2">
                         <User2 className="w-5 h-5 text-indigo-500" />
-                        <span className="font-medium">{userInfo.username}</span>
+                        <span className="font-medium">{String(userInfo.username)}</span>
                       </div>
                       {userInfo.role === "admin" && (
                         <button
