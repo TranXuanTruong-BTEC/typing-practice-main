@@ -22,6 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       avatar: user.avatar || null,
       emailVerified: !!user.emailVerified,
       id: user._id,
+      role: user.role || "user"
     });
   } catch (e) {
     return res.status(401).json({ message: 'Token không hợp lệ hoặc hết hạn' });

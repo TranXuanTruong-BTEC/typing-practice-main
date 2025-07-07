@@ -178,6 +178,18 @@ export default function HomePage() {
                         <User2 className="w-5 h-5 text-indigo-500" />
                         <span className="font-medium">{userInfo.username}</span>
                       </div>
+                      {userInfo.role === "admin" && (
+                        <button
+                          className="w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-blue-50 transition-colors text-blue-700 font-semibold"
+                          onClick={() => {
+                            window.location.href = "/admin";
+                            setShowDropdown(false);
+                          }}
+                        >
+                          <Home className="w-5 h-5 text-blue-600" />
+                          Dashboard
+                        </button>
+                      )}
                       <button
                         className="w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-gray-50 transition-colors text-gray-700"
                         onClick={() => {
@@ -191,7 +203,6 @@ export default function HomePage() {
                       <button
                         className="w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-gray-50 transition-colors text-gray-700"
                         onClick={() => {
-                          // Chuyển sang trang lịch sử tập (có thể là /history)
                           window.location.href = "/history";
                           setShowDropdown(false);
                         }}

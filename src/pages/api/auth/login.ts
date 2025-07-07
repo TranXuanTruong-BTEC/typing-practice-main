@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(401).json({ message: 'Sai tên đăng nhập hoặc mật khẩu' });
     // Tạo JWT
-    const token = jwt.sign({ username: user.username, gmail: user.gmail, id: user._id }, JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ username: user.username, gmail: user.gmail, id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
     return res.status(200).json({ token });
   } catch (e) {
     return res.status(500).json({ message: 'Lỗi server' });

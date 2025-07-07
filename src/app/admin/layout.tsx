@@ -10,26 +10,43 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const router = useRouter();
   const [checked, setChecked] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [adminName, setAdminName] = useState<string>("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const loggedIn = localStorage.getItem("admin_logged_in");
-      if (loggedIn) {
-        setIsLoggedIn(true);
-        setAdminName(localStorage.getItem("admin_name") || "Admin");
-      } else {
-        setIsLoggedIn(false);
-        setAdminName("");
-        if (pathname !== "/admin/login") {
-          router.replace("/admin/login");
+    async function checkAdmin() {
+      const token = typeof window !== "undefined" ? localStorage.getItem("user_token") : null;
+      if (!token) {
+        setIsAdmin(false);
+        setChecked(true);
+        router.replace("/login");
+        return;
+      }
+      try {
+        const res = await fetch("/api/auth/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        if (data.role === "admin") {
+          setIsAdmin(true);
+          setAdminName(data.username || "Admin");
+        } else {
+          setIsAdmin(false);
+          localStorage.removeItem("user_token");
+          router.replace("/login");
         }
+      } catch {
+        setIsAdmin(false);
+        localStorage.removeItem("user_token");
+        router.replace("/login");
       }
       setChecked(true);
     }
+    checkAdmin();
+    // eslint-disable-next-line
   }, [router, pathname]);
 
   // Đóng dropdown khi click ngoài
@@ -48,14 +65,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [showDropdown]);
 
   if (!checked) return null;
-
-  // Nếu chưa đăng nhập và đang ở trang login thì chỉ render form login
-  if (!isLoggedIn && pathname === "/admin/login") {
-    return <>{children}</>;
-  }
-
-  // Nếu chưa đăng nhập và KHÔNG ở trang login thì không render gì cả (đã chuyển hướng)
-  if (!isLoggedIn) return null;
+  if (!isAdmin) return null;
 
   // Nếu đã đăng nhập thì render giao diện admin
   return (
@@ -102,10 +112,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <button
                   className="w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-gray-50 transition-colors text-gray-700 rounded-b-xl"
                   onClick={() => {
-                    localStorage.removeItem("admin_logged_in");
-                    localStorage.removeItem("admin_name");
+                    localStorage.removeItem("user_token");
                     setShowDropdown(false);
-                    router.replace("/admin/login");
+                    router.replace("/login");
                   }}
                 >
                   <LogOut className="w-5 h-5 text-red-500" />
