@@ -90,6 +90,11 @@ export default function AdminUsersPage() {
         }),
       });
       if (!res.ok) throw new Error("Cập nhật thất bại");
+      const data = await res.json();
+      if (data.token) {
+        localStorage.setItem("user_token", data.token);
+        window.location.reload(); // Reload lại trang để cập nhật UI theo role mới
+      }
       setModalOpen(false);
       setEditUser(null);
       setEditData({});

@@ -76,7 +76,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (avatar !== undefined) update.avatar = avatar;
       if (banReason !== undefined) update.banReason = banReason;
       await db.collection('users').updateOne({ _id: typeof _id === 'string' ? new ObjectId(_id) : _id }, { $set: update });
-      return res.status(200).json({ success: true });
+      // Lấy lại thông tin user vừa cập nhật
+      const updatedUser = await db.collection('users').findOne({ _id: typeof _id === 'string' ? new ObjectId(_id) : _id });
+      let token;
+      // Nếu admin tự đổi role của mình hoặc user tự đổi role, trả về token mới
+      if (updatedUser && updatedUser._id.toString() === payload.id.toString()) {
+        token = jwt.sign({
+          id: updatedUser._id,
+          username: updatedUser.username,
+          gmail: updatedUser.gmail,
+          avatar: updatedUser.avatar || null,
+          emailVerified: !!updatedUser.emailVerified,
+          role: updatedUser.role || "user"
+        }, JWT_SECRET, { expiresIn: '7d' });
+      }
+      return res.status(200).json({ success: true, token });
     } catch {
       return res.status(401).json({ message: 'Token không hợp lệ hoặc hết hạn' });
     }
