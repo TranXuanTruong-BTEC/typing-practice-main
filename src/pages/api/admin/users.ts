@@ -78,10 +78,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await db.collection('users').updateOne({ _id: typeof _id === 'string' ? new ObjectId(_id) : _id }, { $set: update });
       // Lấy lại thông tin user vừa cập nhật
       const updatedUser = await db.collection('users').findOne({ _id: typeof _id === 'string' ? new ObjectId(_id) : _id });
-      let token;
+      let newToken;
       // Nếu admin tự đổi role của mình hoặc user tự đổi role, trả về token mới
       if (updatedUser && updatedUser._id.toString() === payload.id.toString()) {
-        token = jwt.sign({
+        newToken = jwt.sign({
           id: updatedUser._id,
           username: updatedUser.username,
           gmail: updatedUser.gmail,
@@ -90,7 +90,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           role: updatedUser.role || "user"
         }, JWT_SECRET, { expiresIn: '7d' });
       }
-      return res.status(200).json({ success: true, token });
+      return res.status(200).json({ success: true, token: newToken });
     } catch {
       return res.status(401).json({ message: 'Token không hợp lệ hoặc hết hạn' });
     }
