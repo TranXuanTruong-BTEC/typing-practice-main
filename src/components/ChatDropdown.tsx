@@ -48,7 +48,9 @@ export default function ChatDropdown({ onOpenChat }: { onOpenChat: (conv: Conver
     const res = await fetch("/api/conversations", {
       headers: { Authorization: `Bearer ${token}` }
     });
+    if (!res.ok) { setConversations([]); setUnreadMap({}); setCacheMessages({}); return; }
     const data = await res.json();
+    if (!Array.isArray(data)) { setConversations([]); setUnreadMap({}); setCacheMessages({}); return; }
     setConversations(data);
     // Đếm số tin nhắn chưa đọc cho từng hội thoại và preload messages
     const token2 = localStorage.getItem("user_token");
@@ -59,7 +61,9 @@ export default function ChatDropdown({ onOpenChat }: { onOpenChat: (conv: Conver
       const resMsg = await fetch(`/api/messages?conversationId=${conv._id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      if (!resMsg.ok) { unread[conv._id] = 0; msgCache[conv._id] = []; continue; }
       const msgs: Message[] = await resMsg.json();
+      if (!Array.isArray(msgs)) { unread[conv._id] = 0; msgCache[conv._id] = []; continue; }
       unread[conv._id] = msgs.filter((m: Message) => m.to === myId2 && !m.isRead).length;
       msgCache[conv._id] = msgs;
     }
@@ -72,7 +76,9 @@ export default function ChatDropdown({ onOpenChat }: { onOpenChat: (conv: Conver
     const res = await fetch("/api/admin/users", {
       headers: { Authorization: `Bearer ${token}` }
     });
+    if (!res.ok) { setUsers([]); return; }
     const data = await res.json();
+    if (!Array.isArray(data)) { setUsers([]); return; }
     setUsers(data);
   };
 

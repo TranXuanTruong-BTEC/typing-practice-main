@@ -147,7 +147,9 @@ export default function ChatPage({ conversationId, userMap: userMapProp, preload
       const resMsg = await fetch(`/api/messages?conversationId=${conv._id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      if (!resMsg.ok) { unread[conv._id] = 0; continue; }
       const msgs: Message[] = await resMsg.json();
+      if (!Array.isArray(msgs)) { unread[conv._id] = 0; continue; }
       unread[conv._id] = msgs.filter((m: Message) => m.to === myId2 && !m.isRead).length;
     }
     setUnreadMap(unread);
@@ -173,7 +175,6 @@ export default function ChatPage({ conversationId, userMap: userMapProp, preload
     if (!res.ok) { setMessages([]); if (showLoading) setLoadingMsg(false); return; }
     const data: Message[] = await res.json();
     if (!Array.isArray(data)) { setMessages([]); if (showLoading) setLoadingMsg(false); return; }
-    // So sánh kỹ: số lượng, id cuối, nội dung cuối
     setMessages(prev => {
       if (
         prev.length !== data.length ||

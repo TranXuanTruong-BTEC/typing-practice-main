@@ -21,7 +21,9 @@ export default function ChatFloatingWindows({
       const res = await fetch("/api/admin/users", {
         headers: { Authorization: `Bearer ${token}` }
       });
+      if (!res.ok) { setUserMap({}); return; }
       const data = await res.json();
+      if (!Array.isArray(data)) { setUserMap({}); return; }
       setUserMap(Object.fromEntries(data.map((u: User) => [u._id, u])));
     }
     fetchUsers();
