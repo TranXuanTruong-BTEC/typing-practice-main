@@ -72,6 +72,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Dùng hook để lấy pathname (chỉ dùng được trong client component)
+  // Nên cần tách phần body thành 1 component con để dùng hook
   return (
     <html lang="vi">
       <head>

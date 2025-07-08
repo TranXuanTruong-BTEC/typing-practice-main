@@ -38,14 +38,22 @@ if (process.env.NODE_ENV === "development") {
 //   createdAt: Date
 // }
 
-// Cấu trúc collection messages (inbox):
+// Cấu trúc collection conversations:
 // {
 //   _id: ObjectId,
-//   from: ObjectId | 'admin', // id người gửi hoặc 'admin'
-//   to: ObjectId,             // id người nhận
-//   subject: string,          // tiêu đề
-//   content: string,          // nội dung
-//   isRead: boolean,          // đã đọc hay chưa
+//   members: [ObjectId, ObjectId], // 2 user trong hội thoại
+//   lastMessage: string,           // nội dung cuối cùng
+//   updatedAt: Date
+// }
+
+// Cấu trúc collection messages (chat):
+// {
+//   _id: ObjectId,
+//   conversationId: ObjectId,
+//   from: ObjectId,               // id người gửi
+//   to: ObjectId,                 // id người nhận
+//   content: string,              // nội dung tin nhắn
+//   isRead: boolean,              // đã đọc hay chưa
 //   createdAt: Date
 // }
 

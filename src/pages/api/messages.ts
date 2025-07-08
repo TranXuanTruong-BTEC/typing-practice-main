@@ -25,35 +25,42 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const client = await clientPromise;
   const db = client.db();
   const messages = db.collection('messages');
+  const conversations = db.collection('conversations');
 
   if (req.method === 'GET') {
-    // Lấy danh sách tin nhắn của user (gửi đến user)
-    const msgList = await messages.find({ to: new ObjectId(payload.id) }).sort({ createdAt: -1 }).toArray();
-    return res.status(200).json(msgList);
+    // Lấy tin nhắn của hội thoại
+    const { conversationId } = req.query;
+    if (!conversationId) return res.status(400).json({ message: 'Thiếu conversationId' });
+    const msgs = await messages.find({ conversationId: new ObjectId(conversationId as string) }).sort({ createdAt: 1 }).toArray();
+    return res.status(200).json(msgs);
   }
 
   if (req.method === 'POST') {
-    // Gửi tin nhắn (chỉ admin)
-    if (payload.role !== 'admin') return res.status(403).json({ message: 'Chỉ admin mới được gửi tin nhắn' });
-    const { to, subject, content } = req.body;
-    if (!to || !subject || !content) return res.status(400).json({ message: 'Thiếu thông tin' });
-    const newMsg = {
-      from: 'admin',
+    // Gửi tin nhắn mới
+    const { conversationId, to, content } = req.body;
+    if (!conversationId || !to || !content) return res.status(400).json({ message: 'Thiếu thông tin' });
+    const msg = {
+      conversationId: new ObjectId(conversationId),
+      from: new ObjectId(payload.id),
       to: new ObjectId(to),
-      subject,
       content,
       isRead: false,
       createdAt: new Date()
     };
-    await messages.insertOne(newMsg);
+    await messages.insertOne(msg);
+    // Cập nhật lastMessage và updatedAt cho conversation
+    await conversations.updateOne(
+      { _id: new ObjectId(conversationId) },
+      { $set: { lastMessage: content, updatedAt: new Date() } }
+    );
     return res.status(201).json({ success: true });
   }
 
   if (req.method === 'PATCH') {
-    // Đánh dấu đã đọc tin nhắn
-    const { msgId } = req.body;
-    if (!msgId) return res.status(400).json({ message: 'Thiếu msgId' });
-    await messages.updateOne({ _id: new ObjectId(msgId), to: new ObjectId(payload.id) }, { $set: { isRead: true } });
+    // Đánh dấu đã đọc các tin nhắn trong hội thoại
+    const { conversationId } = req.body;
+    if (!conversationId) return res.status(400).json({ message: 'Thiếu conversationId' });
+    await messages.updateMany({ conversationId: new ObjectId(conversationId), to: new ObjectId(payload.id), isRead: false }, { $set: { isRead: true } });
     return res.status(200).json({ success: true });
   }
 
