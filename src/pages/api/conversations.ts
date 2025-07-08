@@ -40,6 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let conv = await conversations.findOne({ members });
     if (!conv) {
       conv = {
+        _id: new ObjectId(),
         members,
         lastMessage: '',
         updatedAt: new Date()
