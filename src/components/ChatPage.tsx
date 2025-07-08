@@ -15,6 +15,7 @@ export interface Message {
   content: string;
   isRead: boolean;
   createdAt: string;
+  error?: boolean; // Thêm trạng thái lỗi
 }
 export interface User {
   _id: string;
@@ -40,6 +41,8 @@ export default function ChatPage({ conversationId, userMap: userMapProp, preload
   const [unreadMap, setUnreadMap] = useState<Record<string, number>>({});
   const pollingConvRef = useRef<NodeJS.Timeout | null>(null);
   const pollingMsgRef = useRef<NodeJS.Timeout | null>(null);
+  const [sending, setSending] = useState(false);
+  const [pendingMsgs, setPendingMsgs] = useState<Message[]>([]);
 
   // Lấy userId từ token
   useEffect(() => {
@@ -204,16 +207,39 @@ export default function ChatPage({ conversationId, userMap: userMapProp, preload
     if (!newMsg.trim() || !selectedConv) return;
     const token = localStorage.getItem("user_token");
     const to = selectedConv.members.find((id) => id !== myId);
-    await fetch("/api/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({ conversationId: selectedConv._id, to, content: newMsg })
-    });
+    const tempId = `pending-${Date.now()}`;
+    const optimisticMsg: Message = {
+      _id: tempId,
+      conversationId: selectedConv._id,
+      from: myId,
+      to: to || "",
+      content: newMsg,
+      isRead: false,
+      createdAt: new Date().toISOString(),
+    };
+    setPendingMsgs((prev) => [...prev, optimisticMsg]);
     setNewMsg("");
-    fetchMessages(selectedConv._id);
+    setSending(true);
+    try {
+      const res = await fetch("/api/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ conversationId: selectedConv._id, to, content: optimisticMsg.content })
+      });
+      if (res.ok) {
+        // Lấy lại messages từ server để đồng bộ
+        await fetchMessages(selectedConv._id);
+      } else {
+        // Đánh dấu lỗi gửi
+        setPendingMsgs((prev) => prev.map(m => m._id === tempId ? { ...m, error: true } : m));
+      }
+    } catch {
+      setPendingMsgs((prev) => prev.map(m => m._id === tempId ? { ...m, error: true } : m));
+    }
+    setSending(false);
   };
 
   const handleCreateConversation = async (userId: string) => {
@@ -232,6 +258,9 @@ export default function ChatPage({ conversationId, userMap: userMapProp, preload
     setShowUserDropdown(false);
     setSearchUser("");
   };
+
+  // Hiển thị messages + pendingMsgs (pending ở cuối, không trùng _id)
+  const allMessages = [...messages, ...pendingMsgs.filter(pm => !messages.some(m => m._id === pm._id))];
 
   return (
     <div className="flex h-full w-full bg-white" style={{minWidth: 340, minHeight: 400}}>
@@ -326,19 +355,21 @@ export default function ChatPage({ conversationId, userMap: userMapProp, preload
               </div>
             )}
             <div className="flex-1 overflow-y-auto px-4 py-3 bg-white custom-scrollbar">
-              {messages.length === 0 && loadingMsg ? (
+              {allMessages.length === 0 && loadingMsg ? (
                 <div className="text-gray-400 text-center py-8">Đang tải tin nhắn...</div>
-              ) : messages.length === 0 ? (
+              ) : allMessages.length === 0 ? (
                 <div className="text-gray-400 text-center py-8">Chưa có tin nhắn nào</div>
               ) : (
-                messages.map(msg => (
+                allMessages.map(msg => (
                   <div
                     key={msg._id || msg.createdAt}
                     className={`mb-1 flex ${msg.from === myId ? "justify-end" : "justify-start"}`}
                   >
-                    <div className={`rounded-2xl px-3 py-1.5 max-w-[55%] shadow-sm text-sm ${msg.from === myId ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-900"}`} style={{wordBreak: 'break-word'}}>
+                    <div className={`rounded-2xl px-3 py-1.5 max-w-[55%] shadow-sm text-sm ${msg.from === myId ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-900"} ${msg.error ? "border border-red-500" : ""}`} style={{wordBreak: 'break-word', opacity: msg._id?.toString().startsWith('pending-') ? 0.6 : 1}}>
                       {msg.content}
-                      <div className="text-[10px] text-gray-300 mt-0.5 text-right leading-none">{new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                      <div className="text-[10px] text-gray-300 mt-0.5 text-right leading-none">
+                        {msg.error ? <span className="text-red-500">Lỗi gửi</span> : new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      </div>
                     </div>
                   </div>
                 ))
@@ -358,9 +389,9 @@ export default function ChatPage({ conversationId, userMap: userMapProp, preload
               <button
                 type="submit"
                 className="px-5 py-2 bg-blue-600 text-white rounded-2xl font-semibold hover:bg-blue-700 shadow text-sm"
-                disabled={loadingMsg}
+                disabled={sending || !newMsg.trim()}
               >
-                Gửi
+                {sending ? "Đang gửi..." : "Gửi"}
               </button>
             </form>
           </>
