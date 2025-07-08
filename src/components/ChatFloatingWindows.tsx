@@ -1,19 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import ChatPage from "../app/profile/chat/page";
-
-interface Conversation {
-  _id: string;
-  members: string[];
-  lastMessage: string;
-  updatedAt: string;
-}
+import type { Conversation, Message } from "@/app/profile/chat/page";
 
 export default function ChatFloatingWindows({
   openConversations,
   onClose,
 }: {
-  openConversations: { conv: Conversation, preloadMessages?: any[] }[];
+  openConversations: { conv: Conversation, preloadMessages?: Message[] }[];
   onClose: (convId: string) => void;
 }) {
   // Quản lý trạng thái thu nhỏ từng cửa sổ

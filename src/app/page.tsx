@@ -14,6 +14,7 @@ import { jwtDecode } from 'jwt-decode';
 import NotificationBell from '@/components/NotificationBell';
 import ChatDropdown from '@/components/ChatDropdown';
 import ChatFloatingWindows from '@/components/ChatFloatingWindows';
+import type { Conversation, Message } from "@/app/profile/chat/page";
 
 export default function HomePage() {
   const [currentView, setCurrentView] = useState<'selector' | 'practiceModeStep' | 'typing' | 'leaderboard'>('selector');
@@ -25,7 +26,7 @@ export default function HomePage() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [userInfo, setUserInfo] = useState<Record<string, unknown> | null>(null);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
-  const [openChats, setOpenChats] = useState<any[]>([]); // [{conv, preloadMessages}]
+  const [openChats, setOpenChats] = useState<{ conv: Conversation, preloadMessages?: Message[] }[]>([]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -106,7 +107,7 @@ export default function HomePage() {
   };
 
   // Hàm mở cửa sổ chat nổi
-  const handleOpenChat = (conv: any, preloadMessages?: any[]) => {
+  const handleOpenChat = (conv: Conversation, preloadMessages?: Message[]) => {
     setOpenChats((prev) => prev.find(c => c.conv._id === conv._id) ? prev : [...prev, { conv, preloadMessages }]);
   };
   // Hàm đóng cửa sổ chat nổi

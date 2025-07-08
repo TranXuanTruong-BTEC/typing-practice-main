@@ -1,13 +1,13 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 
-interface Conversation {
+export interface Conversation {
   _id: string;
   members: string[];
   lastMessage: string;
   updatedAt: string;
 }
-interface Message {
+export interface Message {
   _id?: string;
   conversationId: string;
   from: string;
@@ -16,14 +16,14 @@ interface Message {
   isRead: boolean;
   createdAt: string;
 }
-interface User {
+export interface User {
   _id: string;
   username: string;
   gmail: string;
   avatar?: string;
 }
 
-export default function ChatPage({ conversationId, userMap: userMapProp, preloadMessages }: { conversationId?: string, userMap?: Record<string, any>, preloadMessages?: any[] }) {
+export default function ChatPage({ conversationId, userMap: userMapProp, preloadMessages }: { conversationId?: string, userMap?: Record<string, User>, preloadMessages?: Message[] }) {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConv, setSelectedConv] = useState<Conversation | null>(null);
   const [messages, setMessages] = useState<Message[]>(preloadMessages || []);
@@ -34,7 +34,6 @@ export default function ChatPage({ conversationId, userMap: userMapProp, preload
   const [searchUser, setSearchUser] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
-  const [creatingConv, setCreatingConv] = useState(false);
   const [loadingMsg, setLoadingMsg] = useState(!preloadMessages);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [myId, setMyId] = useState<string>("");
@@ -172,7 +171,7 @@ export default function ChatPage({ conversationId, userMap: userMapProp, preload
     setMessages(prev => {
       if (
         prev.length !== data.length ||
-        data.some((msg: any, i: number) =>
+        data.some((msg: Message, i: number) =>
           !prev[i] || prev[i]._id !== msg._id || prev[i].content !== msg.content || prev[i].createdAt !== msg.createdAt
         )
       ) {
@@ -211,7 +210,6 @@ export default function ChatPage({ conversationId, userMap: userMapProp, preload
   };
 
   const handleCreateConversation = async (userId: string) => {
-    setCreatingConv(true);
     const token = localStorage.getItem("user_token");
     const res = await fetch("/api/conversations", {
       method: "POST",
@@ -224,7 +222,6 @@ export default function ChatPage({ conversationId, userMap: userMapProp, preload
     const conv = await res.json();
     setSelectedConv(conv);
     fetchConversations();
-    setCreatingConv(false);
     setShowUserDropdown(false);
     setSearchUser("");
   };

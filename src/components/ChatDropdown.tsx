@@ -1,28 +1,16 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import { MessageCircle } from "lucide-react";
+import type { Conversation, Message, User } from "@/app/profile/chat/page";
 
-interface Conversation {
-  _id: string;
-  members: string[];
-  lastMessage: string;
-  updatedAt: string;
-}
-interface User {
-  _id: string;
-  username: string;
-  gmail: string;
-  avatar?: string;
-}
-
-export default function ChatDropdown({ onOpenChat }: { onOpenChat: (conv: Conversation, preloadMessages?: any[]) => void }) {
+export default function ChatDropdown({ onOpenChat }: { onOpenChat: (conv: Conversation, preloadMessages?: Message[]) => void }) {
   const [show, setShow] = useState(false);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [userMap, setUserMap] = useState<Record<string, User>>({});
   const [myId, setMyId] = useState<string>("");
   const [unreadMap, setUnreadMap] = useState<Record<string, number>>({});
-  const [cacheMessages, setCacheMessages] = useState<Record<string, any[]>>({});
+  const [cacheMessages, setCacheMessages] = useState<Record<string, Message[]>>({});
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -66,13 +54,13 @@ export default function ChatDropdown({ onOpenChat }: { onOpenChat: (conv: Conver
     const token2 = localStorage.getItem("user_token");
     const myId2 = token2 ? JSON.parse(atob(token2.split(".")[1])).id : "";
     const unread: Record<string, number> = {};
-    const msgCache: Record<string, any[]> = {};
+    const msgCache: Record<string, Message[]> = {};
     for (const conv of data) {
       const resMsg = await fetch(`/api/messages?conversationId=${conv._id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      const msgs = await resMsg.json();
-      unread[conv._id] = msgs.filter((m: any) => m.to === myId2 && !m.isRead).length;
+      const msgs: Message[] = await resMsg.json();
+      unread[conv._id] = msgs.filter((m: Message) => m.to === myId2 && !m.isRead).length;
       msgCache[conv._id] = msgs;
     }
     setUnreadMap(unread);
