@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import { MessageCircle } from "lucide-react";
-import type { Conversation, Message, User } from "@/app/profile/chat/page";
+import type { Conversation, Message, User } from "@/components/ChatPage";
 
 export default function ChatDropdown({ onOpenChat }: { onOpenChat: (conv: Conversation, preloadMessages?: Message[]) => void }) {
   const [show, setShow] = useState(false);
