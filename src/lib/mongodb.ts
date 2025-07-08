@@ -27,34 +27,4 @@ if (process.env.NODE_ENV === "development") {
   clientPromise = client.connect();
 }
 
-// Cấu trúc collection notifications:
-// {
-//   _id: ObjectId,
-//   userId: ObjectId, // id người nhận
-//   type: string,     // loại thông báo (role_update, message, ...)
-//   title: string,    // tiêu đề thông báo
-//   content: string,  // nội dung thông báo
-//   isRead: boolean,  // đã đọc hay chưa
-//   createdAt: Date
-// }
-
-// Cấu trúc collection conversations:
-// {
-//   _id: ObjectId,
-//   members: [ObjectId, ObjectId], // 2 user trong hội thoại
-//   lastMessage: string,           // nội dung cuối cùng
-//   updatedAt: Date
-// }
-
-// Cấu trúc collection messages (chat):
-// {
-//   _id: ObjectId,
-//   conversationId: ObjectId,
-//   from: ObjectId,               // id người gửi
-//   to: ObjectId,                 // id người nhận
-//   content: string,              // nội dung tin nhắn
-//   isRead: boolean,              // đã đọc hay chưa
-//   createdAt: Date
-// }
-
 export default clientPromise;

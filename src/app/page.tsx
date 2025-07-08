@@ -12,9 +12,6 @@ import { Keyboard, Trophy, Home, User2, LogOut, History } from 'lucide-react';
 import type { PracticeMode } from '@/components/TextSelector';
 import { jwtDecode } from 'jwt-decode';
 import NotificationBell from '@/components/NotificationBell';
-import ChatDropdown from '@/components/ChatDropdown';
-import ChatFloatingWindows from '@/components/ChatFloatingWindows';
-import type { Conversation, Message } from "@/components/ChatPage";
 
 export default function HomePage() {
   const [currentView, setCurrentView] = useState<'selector' | 'practiceModeStep' | 'typing' | 'leaderboard'>('selector');
@@ -26,7 +23,6 @@ export default function HomePage() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [userInfo, setUserInfo] = useState<Record<string, unknown> | null>(null);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
-  const [openChats, setOpenChats] = useState<{ conv: Conversation, preloadMessages?: Message[] }[]>([]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -106,15 +102,6 @@ export default function HomePage() {
     setCurrentView('typing');
   };
 
-  // Hàm mở cửa sổ chat nổi
-  const handleOpenChat = (conv: Conversation, preloadMessages?: Message[]) => {
-    setOpenChats((prev) => prev.find(c => c.conv._id === conv._id) ? prev : [...prev, { conv, preloadMessages }]);
-  };
-  // Hàm đóng cửa sổ chat nổi
-  const handleCloseChat = (convId: string) => {
-    setOpenChats((prev) => prev.filter(c => c.conv._id !== convId));
-  };
-
   const navigationItems = [
     { id: 'selector', label: 'Chọn bài', icon: Home },
     { id: 'typing', label: 'Luyện tập', icon: Keyboard, disabled: !selectedText },
@@ -161,7 +148,6 @@ export default function HomePage() {
                 );
               })}
               {/* ChatDropdown cạnh NotificationBell */}
-              {isUserLoggedIn && <ChatDropdown onOpenChat={handleOpenChat} />}
               {isUserLoggedIn && <NotificationBell />}
               {/* User menu */}
               {!isUserLoggedIn && (
@@ -413,8 +399,6 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
-      {/* Cuối cùng, render các cửa sổ chat nổi */}
-      <ChatFloatingWindows openConversations={openChats} onClose={handleCloseChat} />
     </div>
   );
 }
