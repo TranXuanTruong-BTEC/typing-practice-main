@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Keyboard, Trophy, Home, User2, LogOut, History } from 'lucide-react';
 import type { PracticeMode } from '@/components/TextSelector';
 import { jwtDecode } from 'jwt-decode';
+import NotificationBell from '@/components/NotificationBell';
 
 export default function HomePage() {
   const [currentView, setCurrentView] = useState<'selector' | 'practiceModeStep' | 'typing' | 'leaderboard'>('selector');
@@ -146,6 +147,9 @@ export default function HomePage() {
                   </button>
                 );
               })}
+              {/* Notification Bell */}
+              {isUserLoggedIn && <NotificationBell />}
+              {/* User menu */}
               {!isUserLoggedIn && (
                 <>
                   <a
@@ -199,6 +203,16 @@ export default function HomePage() {
                       >
                         <User2 className="w-5 h-5 text-blue-500" />
                         Thông tin tài khoản
+                      </button>
+                      <button
+                        className="w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-gray-50 transition-colors text-green-700"
+                        onClick={() => {
+                          window.location.href = "/profile/inbox";
+                          setShowDropdown(false);
+                        }}
+                      >
+                        <History className="w-5 h-5 text-green-500" />
+                        Hòm thư
                       </button>
                       <button
                         className="w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-gray-50 transition-colors text-gray-700"

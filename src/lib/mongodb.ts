@@ -27,4 +27,26 @@ if (process.env.NODE_ENV === "development") {
   clientPromise = client.connect();
 }
 
+// Cấu trúc collection notifications:
+// {
+//   _id: ObjectId,
+//   userId: ObjectId, // id người nhận
+//   type: string,     // loại thông báo (role_update, message, ...)
+//   title: string,    // tiêu đề thông báo
+//   content: string,  // nội dung thông báo
+//   isRead: boolean,  // đã đọc hay chưa
+//   createdAt: Date
+// }
+
+// Cấu trúc collection messages (inbox):
+// {
+//   _id: ObjectId,
+//   from: ObjectId | 'admin', // id người gửi hoặc 'admin'
+//   to: ObjectId,             // id người nhận
+//   subject: string,          // tiêu đề
+//   content: string,          // nội dung
+//   isRead: boolean,          // đã đọc hay chưa
+//   createdAt: Date
+// }
+
 export default clientPromise;
