@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { BookText, Layers, Languages, BarChart3 } from "lucide-react";
 import Link from "next/link";
 import { BarChart, Bar, XAxis, YAxis, Tooltip as RTooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
@@ -20,6 +20,13 @@ interface TypingText {
 export default function AdminDashboard() {
   const [texts, setTexts] = useState<TypingText[]>([]);
   const [stats, setStats] = useState({ totalUsers: 0, activeUsers: 0, totalSessions: 0, traffic: 0 });
+  const [notifyAll, setNotifyAll] = useState(true);
+  const [receiver, setReceiver] = useState("");
+  const [notiTitle, setNotiTitle] = useState("");
+  const [notiContent, setNotiContent] = useState("");
+  const [sending, setSending] = useState(false);
+  const [notiMsg, setNotiMsg] = useState("");
+  const titleRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchRecentTexts();
@@ -45,6 +52,65 @@ export default function AdminDashboard() {
       setStats(data);
     } catch {}
   }
+
+  const handleSendNotification = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setNotiMsg("");
+    if (!notiTitle || !notiContent || (!notifyAll && !receiver)) {
+      setNotiMsg("Vui lòng nhập đủ thông tin");
+      return;
+    }
+    setSending(true);
+    try {
+      const token = localStorage.getItem("user_token");
+      if (notifyAll) {
+        // Gửi cho tất cả user: lấy danh sách user, gửi tuần tự
+        const resUsers = await fetch("/api/admin/users", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const users = await resUsers.json();
+        for (const u of users) {
+          await fetch("/api/notifications", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              userId: u._id,
+              type: "admin",
+              title: notiTitle,
+              content: notiContent
+            })
+          });
+        }
+        setNotiMsg("Đã gửi thông báo cho tất cả user!");
+      } else {
+        // Gửi cho 1 user cụ thể
+        await fetch("/api/notifications", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            userId: receiver,
+            type: "admin",
+            title: notiTitle,
+            content: notiContent
+          })
+        });
+        setNotiMsg("Đã gửi thông báo cho user!");
+      }
+      setNotiTitle("");
+      setNotiContent("");
+      setReceiver("");
+      titleRef.current?.focus();
+    } catch {
+      setNotiMsg("Lỗi gửi thông báo!");
+    }
+    setSending(false);
+  };
 
   // Thống kê theo thể loại
   const categoryStats = Object.entries(
@@ -239,6 +305,53 @@ export default function AdminDashboard() {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="bg-white rounded-xl shadow border border-gray-100 p-4 mb-10">
+        <h3 className="font-semibold text-lg mb-4">Gửi thông báo</h3>
+        <form className="space-y-4" onSubmit={handleSendNotification}>
+          <div className="flex items-center gap-4">
+            <label className="flex items-center gap-2">
+              <input type="radio" checked={notifyAll} onChange={() => setNotifyAll(true)} />
+              Tất cả user
+            </label>
+            <label className="flex items-center gap-2">
+              <input type="radio" checked={!notifyAll} onChange={() => setNotifyAll(false)} />
+              1 user cụ thể
+            </label>
+            {!notifyAll && (
+              <input
+                type="text"
+                className="border rounded px-2 py-1"
+                placeholder="Nhập userId hoặc email"
+                value={receiver}
+                onChange={e => setReceiver(e.target.value)}
+                style={{ minWidth: 180 }}
+              />
+            )}
+          </div>
+          <input
+            ref={titleRef}
+            type="text"
+            className="border rounded px-3 py-2 w-full"
+            placeholder="Tiêu đề thông báo"
+            value={notiTitle}
+            onChange={e => setNotiTitle(e.target.value)}
+          />
+          <textarea
+            className="border rounded px-3 py-2 w-full min-h-[80px]"
+            placeholder="Nội dung thông báo"
+            value={notiContent}
+            onChange={e => setNotiContent(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="px-6 py-2 bg-blue-600 text-white rounded font-semibold hover:bg-blue-700 disabled:opacity-60"
+            disabled={sending}
+          >
+            {sending ? "Đang gửi..." : "Gửi thông báo"}
+          </button>
+          {notiMsg && <div className="text-sm text-green-600 mt-2">{notiMsg}</div>}
+        </form>
       </div>
     </div>
   );
