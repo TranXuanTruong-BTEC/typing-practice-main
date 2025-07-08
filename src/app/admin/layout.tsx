@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LogOut, User2 } from "lucide-react";
 import Image from "next/image";
+import SendNotificationCard from '@/components/admin/SendNotificationCard';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -84,6 +85,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Link href="/admin/texts" className={`py-2 px-3 rounded-l-lg transition-all flex items-center gap-2 ${(pathname || '').startsWith("/admin/texts") ? "bg-gradient-to-r from-blue-200 via-indigo-200 to-purple-200 text-blue-900 border-l-4 border-gradient-l" : "hover:bg-blue-100 hover:text-blue-700"}`}>Quản lý văn bản</Link>
             <Link href="/admin/users" className={`py-2 px-3 rounded-l-lg transition-all flex items-center gap-2 ${(pathname || '').startsWith("/admin/users") ? "bg-gradient-to-r from-blue-200 via-indigo-200 to-purple-200 text-blue-900 border-l-4 border-gradient-l" : "hover:bg-blue-100 hover:text-blue-700"}`}>Quản lý người dùng</Link>
             <Link href="/admin/history" className={`py-2 px-3 rounded-l-lg transition-all flex items-center gap-2 ${(pathname || '').startsWith("/admin/history") ? "bg-gradient-to-r from-blue-200 via-indigo-200 to-purple-200 text-blue-900 border-l-4 border-gradient-l" : "hover:bg-blue-100 hover:text-blue-700"}`}>Lịch sử luyện tập</Link>
+            <Link href="/admin/notifications" className={`py-2 px-3 rounded-l-lg transition-all flex items-center gap-2 ${(pathname || '').startsWith("/admin/notifications") ? "bg-gradient-to-r from-blue-200 via-indigo-200 to-purple-200 text-blue-900 border-l-4 border-gradient-l" : "hover:bg-blue-100 hover:text-blue-700"}`}>Thông báo</Link>
           </nav>
         </div>
         <div className="px-6 py-4 border-t text-xs text-muted-foreground">&copy; 2024 TypingMaster</div>
