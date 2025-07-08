@@ -14,7 +14,7 @@ import { jwtDecode } from 'jwt-decode';
 import NotificationBell from '@/components/NotificationBell';
 import ChatDropdown from '@/components/ChatDropdown';
 import ChatFloatingWindows from '@/components/ChatFloatingWindows';
-import type { Conversation, Message } from "@/app/profile/chat/page";
+import type { Conversation, Message } from "@/components/ChatPage";
 
 export default function HomePage() {
   const [currentView, setCurrentView] = useState<'selector' | 'practiceModeStep' | 'typing' | 'leaderboard'>('selector');
