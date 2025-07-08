@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import ChatPage from "../app/profile/chat/page";
 import type { Conversation, Message } from "@/app/profile/chat/page";
+import type { User } from "@/app/profile/chat/page";
 
 export default function ChatFloatingWindows({
   openConversations,
@@ -12,7 +13,7 @@ export default function ChatFloatingWindows({
 }) {
   // Quản lý trạng thái thu nhỏ từng cửa sổ
   const [minimized, setMinimized] = useState<Record<string, boolean>>({});
-  const [userMap, setUserMap] = useState<Record<string, any>>({});
+  const [userMap, setUserMap] = useState<Record<string, User>>({});
 
   // Lấy userMap để hiển thị avatar, tên
   useEffect(() => {
@@ -22,7 +23,7 @@ export default function ChatFloatingWindows({
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
-      setUserMap(Object.fromEntries(data.map((u: any) => [u._id, u])));
+      setUserMap(Object.fromEntries(data.map((u: User) => [u._id, u])));
     }
     fetchUsers();
   }, []);

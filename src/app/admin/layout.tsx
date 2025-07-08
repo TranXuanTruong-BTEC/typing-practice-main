@@ -6,7 +6,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LogOut, User2 } from "lucide-react";
 import Image from "next/image";
-import SendNotificationCard from '@/components/admin/SendNotificationCard';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

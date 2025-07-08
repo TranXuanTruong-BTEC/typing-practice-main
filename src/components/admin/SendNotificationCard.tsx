@@ -8,8 +8,10 @@ interface User {
 interface Notification {
   _id: string;
   userId: string;
+  type: string;
   title: string;
   content: string;
+  isRead: boolean;
   createdAt: string;
 }
 
@@ -47,7 +49,7 @@ export default function SendNotificationCard() {
       headers: { Authorization: `Bearer ${token}` }
     });
     const data = await res.json();
-    setHistory(data.filter((n: any) => n.type === "admin"));
+    setHistory(data.filter((n: Notification) => n.type === "admin"));
   };
 
   useEffect(() => {
