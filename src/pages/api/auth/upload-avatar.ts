@@ -38,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!user) {
       return res.status(500).json({ message: 'Không tìm thấy user sau khi cập nhật.' });
     }
-    const newToken = jwt.sign({ username: user.username, gmail: user.gmail, id: user._id, avatar: user.avatar || null, emailVerified: !!user.emailVerified }, JWT_SECRET, { expiresIn: '7d' });
+    const newToken = jwt.sign({ username: user.username, gmail: user.gmail, id: user._id, avatar: user.avatar || null, emailVerified: !!user.emailVerified, role: user.role || "user" }, JWT_SECRET, { expiresIn: '7d' });
     return res.status(200).json({ avatar, token: newToken });
   } catch {
     return res.status(401).json({ message: 'Token không hợp lệ hoặc lỗi server' });
