@@ -1,8 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import ChatPage from "../app/profile/chat/page";
-import type { Conversation, Message } from "@/app/profile/chat/page";
-import type { User } from "@/app/profile/chat/page";
+import ChatPage from "@/components/ChatPage";
+import type { Conversation, Message, User } from "@/components/ChatPage";
 
 export default function ChatFloatingWindows({
   openConversations,
