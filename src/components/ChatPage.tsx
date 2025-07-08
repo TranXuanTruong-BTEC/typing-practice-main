@@ -135,7 +135,9 @@ export default function ChatPage({ conversationId, userMap: userMapProp, preload
     const res = await fetch("/api/conversations", {
       headers: { Authorization: `Bearer ${token}` }
     });
+    if (!res.ok) { setConversations([]); return; }
     const data = await res.json();
+    if (!Array.isArray(data)) { setConversations([]); return; }
     setConversations(data);
     // Đếm số tin nhắn chưa đọc cho từng hội thoại
     const token2 = localStorage.getItem("user_token");
@@ -156,7 +158,9 @@ export default function ChatPage({ conversationId, userMap: userMapProp, preload
     const res = await fetch("/api/admin/users", {
       headers: { Authorization: `Bearer ${token}` }
     });
+    if (!res.ok) { setUsers([]); return; }
     const data = await res.json();
+    if (!Array.isArray(data)) { setUsers([]); return; }
     setUsers(data);
   };
 
@@ -166,7 +170,9 @@ export default function ChatPage({ conversationId, userMap: userMapProp, preload
     const res = await fetch(`/api/messages?conversationId=${conversationId}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
+    if (!res.ok) { setMessages([]); if (showLoading) setLoadingMsg(false); return; }
     const data: Message[] = await res.json();
+    if (!Array.isArray(data)) { setMessages([]); if (showLoading) setLoadingMsg(false); return; }
     // So sánh kỹ: số lượng, id cuối, nội dung cuối
     setMessages(prev => {
       if (
